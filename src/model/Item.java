@@ -11,9 +11,22 @@ public class Item {
 
     public Item(String name, String description, Room room, Category category, int quantity) {
         this.name = name;
-        this.description = "description";
-        this.room = Room.NOT_ALLOCATED;
-        this.category = Category.NOT_CATEGORIZED;
+
+        this.description =
+                description != null
+                ? description
+                : "descrição";
+
+        this.room =
+                room != null
+                ? room
+                : Room.NOT_ALLOCATED;
+
+        this.category =
+                category != null
+                ? category
+                : Category.NOT_CATEGORIZED;
+
         this.quantity = quantity;
 
     }
