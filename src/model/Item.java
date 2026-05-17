@@ -31,6 +31,14 @@ public class Item {
 
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
     public boolean isRunningOut() {
         return quantity <= 2;
     }
@@ -80,10 +88,13 @@ public class Item {
 
     @Override
     public String toString(){
-        return name +
-                " | qty: " + quantity +
-                " | room: " + room +
-                " | category: " + category;
+        return
+                " | Name: " + name +
+                        "\n |Description: " + description +
+                        "\n |Room: " + room +
+                        "\n |Category: " + category +
+                        "\n |Quantity: " + quantity +
+                        "\n---------------------------;";
     }
 
 }

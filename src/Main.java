@@ -1,5 +1,6 @@
 import model.Item;
 import model.ItemBuilder;
+import persistence.FileManager;
 import service.ItemService;
 
 import java.util.Scanner;
@@ -12,6 +13,10 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         ItemService service = new ItemService();
+
+        for(Item item : FileManager.load()){
+            service.addItem(item);
+        }
 
         String input = "";
 
@@ -156,7 +161,7 @@ public class Main {
                     break;
 
                 case "7":
-                    System.out.println("Update item quantity: ");
+                    System.out.println("Update item name: ");
                     name = sc.nextLine();
                     Item itemUpdate = service.findByName(name.trim());
                     if(itemUpdate == null){
@@ -170,13 +175,18 @@ public class Main {
                     System.out.println("Units total after restock: " + itemUpdate.getQuantity());
                     break;
 
+
                 case "8":
+
+                    FileManager.save(service.listItems());
                     System.out.println("Thank you for using this app!");
                     isRunning = false;
                     break;
 
+
                 default:
                     System.out.println("Invalid Option! Try again.");
+
             }
 
 
