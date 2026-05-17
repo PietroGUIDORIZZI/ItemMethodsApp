@@ -1,6 +1,15 @@
 package ui;
 
+import java.util.Scanner;
+
 public class ConsoleUI {
+
+    private Scanner sc;
+
+    public ConsoleUI(){
+
+        sc = new Scanner(System.in);
+    }
 
     public void printMenu(){
         System.out.println("=========================");
@@ -20,4 +29,47 @@ public class ConsoleUI {
         System.out.println();
 
     }
+
+    public String askItemName(){
+        System.out.println("Item Name: ");
+        return sc.nextLine();
+    }
+
+    public String askItemDescription(){
+        System.out.println("Item Description: ");
+        return sc.nextLine();
+    }
+
+    public String askItemRoom(){
+        System.out.println("Item Room: ");
+        return sc.nextLine();
+    }
+
+    public String askItemCategory(){
+        System.out.println("Item Category: ");
+        return  sc.nextLine();
+    }
+
+    public String askQuantity(){
+        System.out.println("Quantity: ");
+        return  sc.nextLine();
+    }
+
+    public void showUnitsLeft(int quantity){
+        System.out.println("Units left: " + quantity);
+
+    }
+
+    public void showItemAdded(String name){
+        System.out.println(name + " was added!");
+    }
+
+    public void showItemNotFound(String name){
+        System.out.println(name + " not found!");
+    }
+
+    public String askMenuOption(){
+        return sc.nextLine();
+    }
+
 }

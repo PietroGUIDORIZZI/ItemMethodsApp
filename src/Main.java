@@ -11,7 +11,7 @@ import static util.InputParser.*;
 public class Main {
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
+
         ConsoleUI ui = new ConsoleUI();
         ItemService service = new ItemService();
 
@@ -25,36 +25,36 @@ public class Main {
         while (isRunning) {
             ui.printMenu();
 
-            String op = sc.nextLine();
+            String op = ui.askMenuOption();
 
 
             switch (op) {
                 case "1":
-                    addItemFlow(sc, service);
+                    addItemFlow(ui, service);
                     break;
 
                 case "2":
-                    listItemFlow(service);
+                    listItemFlow( service);
                     break;
 
                 case "3":
-                    searchItemFlow(sc, service);
+                    searchItemFlow(ui, service);
                     break;
 
                 case "4":
-                    removeItemFlow(sc, service);
+                    removeItemFlow(ui, service);
                     break;
 
                 case "5":
-                    useItemFlow(sc, service);
+                    useItemFlow(ui, service);
                     break;
 
                 case "6":
-                    restockItemFlow(sc, service);
+                    restockItemFlow(ui, service);
                     break;
 
                 case "7":
-                    updateItemFlow(sc, service);
+                    updateItemFlow(ui, service);
                     break;
 
 
@@ -81,16 +81,15 @@ public class Main {
 
     }
 
-    private static void updateItemFlow(Scanner sc, ItemService service) {
-        System.out.println("Update item name: ");
-        String name = sc.nextLine();
+    private static void updateItemFlow(ConsoleUI ui, ItemService service) {
+        System.out.println("Update item name ");
+        String name = ui.askItemName();
         Item itemUpdate = service.findByName(name.trim());
         if (itemUpdate == null) {
             System.out.println("Item not found.");
             return;
         }
-        System.out.println("Quantity update: ");
-        String input = sc.nextLine();
+        String input = ui.askQuantity();
         int qt = parseInt(input);
         itemUpdate.updateQuantity(qt);
         FileManager.save(service.listItems());
@@ -98,16 +97,16 @@ public class Main {
 
     }
 
-    private static void restockItemFlow(Scanner sc, ItemService service) {
+    private static void restockItemFlow(ConsoleUI ui, ItemService service) {
         System.out.println("Restock item: ");
-        String name = sc.nextLine();
+        String name = ui.askItemName();
         Item itemRestock = service.findByName(name.trim());
         if (itemRestock == null) {
             System.out.println("Item not found.");
             return;
         }
         System.out.println("Units to restock: ");
-        String input = sc.nextLine();
+        String input = ui.askQuantity();
         int qt = parseInt(input);
 
         itemRestock.restock(qt);
@@ -115,47 +114,17 @@ public class Main {
         System.out.println("Units total after restock: " + itemRestock.getQuantity());
     }
 
-    private static void addItemFlow(Scanner sc, ItemService service) {
+    private static void addItemFlow(ConsoleUI ui, ItemService service) {
 
-        System.out.println("Item Name: ");
-        String name = sc.nextLine();
+        String name = ui.askItemName();
 
-        System.out.println("Item Description: ");
-        String description = sc.nextLine();
+        String description = ui.askItemDescription();
 
-        System.out.println("""
-                Item Room:
-                YARD
-                LAUNDRY_ROOM
-                KITCHEN
-                SMALL_RESTROOM
-                LIVING_ROOM
-                STAIRS
-                BIG_BEDROOM
-                SMALL_BEDROOM
-                RESTROOM
-                BALCONY
-                NOT_ALLOCATED
-                """);
+        String sRoom = ui.askItemRoom();
 
-        String sRoom = sc.nextLine();
+        String sCategory = ui.askItemCategory();
 
-        System.out.println("""
-                Item Category:
-                FOOD
-                CLEANING
-                HYGIENE
-                SAFETY
-                BED_BATH
-                OTHERS
-                NOT_CATEGORIZED
-                """);
-
-        String sCategory = sc.nextLine();
-
-        System.out.println("Item Quantity: ");
-
-        int quantity = parseInt(sc.nextLine());
+        int quantity = parseInt(ui.askQuantity());
 
         Item item = new ItemBuilder()
                 .name(name)
@@ -169,11 +138,11 @@ public class Main {
 
         FileManager.save(service.listItems());
 
-        System.out.println(name + " was added!");
+        ui.showItemAdded(name);
     }
 
     private static void listItemFlow(ItemService service) {
-        System.out.println("\n=== Item List         ===");
+        System.out.println("\n=== Item List ===========");
 
         for (Item item2 : service.listItems()) {
             System.out.println(item2);
@@ -186,10 +155,10 @@ public class Main {
         }
     }
 
-    private static void searchItemFlow(Scanner sc, ItemService service) {
+    private static void searchItemFlow(ConsoleUI ui, ItemService service) {
         System.out.println("Search Item: ");
 
-        String input = sc.nextLine();
+        String input = ui.askItemName();
 
         Item item = service.findByName((input.trim()));
 
@@ -200,10 +169,10 @@ public class Main {
         System.out.println(item);
     }
 
-    private static void removeItemFlow(Scanner sc, ItemService service) {
+    private static void removeItemFlow(ConsoleUI ui, ItemService service) {
         System.out.println("Remove Item: ");
 
-        String input = sc.nextLine();
+        String input = ui.askItemName();
 
         if (service.removeByName(input.trim())) {
 
@@ -214,16 +183,16 @@ public class Main {
         }
     }
 
-    private static void useItemFlow(Scanner sc, ItemService service) {
+    private static void useItemFlow(ConsoleUI ui, ItemService service) {
         System.out.println("Use item: ");
-        String input = sc.nextLine();
+        String input = ui.askItemName();
         Item itemUses = service.findByName(input.trim());
         if (itemUses == null) {
             System.out.println("Item not found.");
             return;
         }
         System.out.println("Units used: ");
-        input = sc.nextLine();
+        input = ui.askQuantity();
         int qt = parseInt(input);
         itemUses.use(qt);
         FileManager.save(service.listItems());
