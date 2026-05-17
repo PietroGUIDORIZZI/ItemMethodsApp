@@ -80,7 +80,10 @@ public class Item {
 
     @Override
     public String toString(){
-        return name + " (" + quantity + ")";
+        return name +
+                " | qty: " + quantity +
+                " | room: " + room +
+                " | category: " + category;
     }
 
 }

@@ -17,10 +17,7 @@ public class ItemService {
 
     public void addItem(Item item){
 
-        if (item == null) {
-            return;
 
-        }
 
         if (item.getName() == null || item.getName().isBlank())  {
             return;
@@ -37,10 +34,24 @@ public class ItemService {
 
     }
 
+
     public List<Item> listItems() {
 
         return new ArrayList<>(items);
 
+    }
+
+    public List<Item> listRunningOutItems(){
+        List<Item> runningOutItems = new ArrayList<>();
+
+        for(Item item : items){
+
+            if(item.isRunningOut()){
+                runningOutItems.add(item);
+            }
+        }
+
+        return runningOutItems;
     }
 
     public Item findByName(String name){
@@ -52,6 +63,18 @@ public class ItemService {
         }
 
         return null;
+    }
+
+    public boolean removeByName(String input) {
+
+        Item item = findByName(input);
+
+        if (item == null) {
+            return false;
+        }
+
+        items.remove(item);
+        return true;
     }
 
 }
