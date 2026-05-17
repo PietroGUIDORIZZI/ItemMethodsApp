@@ -2,6 +2,7 @@ import model.Item;
 import model.ItemBuilder;
 import persistence.FileManager;
 import service.ItemService;
+import ui.ConsoleUI;
 
 import java.util.Scanner;
 
@@ -11,8 +12,10 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-
+        ConsoleUI ui = new ConsoleUI();
         ItemService service = new ItemService();
+
+        String name = "";
 
         for(Item item : FileManager.load()){
             service.addItem(item);
@@ -26,81 +29,18 @@ public class Main {
         boolean isRunning = true;
 
         while (isRunning) {
-            System.out.println("========================");
-            System.out.println("   | Inventory         | ");
-            System.out.println(" 1 | add item          | ");
-            System.out.println(" 2 | list items        | ");
-            System.out.println(" 3 | search items      | ");
-            System.out.println(" 4 | remove items      | ");
-            System.out.println(" 5 | use items         | ");
-            System.out.println(" 6 | restock items     | ");
-            System.out.println(" 7 | update quantity   | ");
-            System.out.println(" 8 | exit              | ");
-            System.out.println("========================");
-            System.out.println();
+            ui.printMenu();
+
             String op = sc.nextLine();
 
 
             switch (op) {
                 case "1":
-                    System.out.println("Item Name: ");
-                    String name = sc.nextLine();
-
-
-                    System.out.println("Item Description: ");
-                    String description = sc.nextLine();
-
-                    System.out.println("Item Room: YARD,\n" +
-                            "           LAUNDRY_ROOM,\n" +
-                            "           KITCHEN,\n" +
-                            "           SMALL_RESTROOM,\n" +
-                            "           LIVING_ROOM,\n" +
-                            "           STAIRS,\n" +
-                            "           BIG_BEDROOM,\n" +
-                            "           SMALL_BEDROOM,\n" +
-                            "           RESTROOM,\n" +
-                            "           BALCONY,\n" +
-                            "           NOT_ALLOCATED");
-                    String Sroom = sc.nextLine();
-
-                    System.out.println("Item Category: FOOD,\n" +
-                            "               CLEANING,\n" +
-                            "               HYGIENE,\n" +
-                            "               SAFETY,\n" +
-                            "               BED_BATH,\n" +
-                            "               OTHERS,\n" +
-                            "               NOT_CATEGORIZED\n");
-                    String Scategory = sc.nextLine();
-
-                    System.out.println("Item Quantity: ");
-                    int quantity = sc.nextInt();
-                    sc.nextLine();
-
-                    Item item = new ItemBuilder()
-                            .name(name)
-                            .description(description)
-                            .room(parseRoom(Sroom))
-                            .category(parseCategory(Scategory))
-                            .quantity(quantity)
-                            .build();
-
-                    service.addItem(item);
-                    System.out.println(name + " was Added!");
-
+                    addItemFlow(sc, service);
                     break;
 
                 case "2":
-                    System.out.println("\n=== Item List         ===");
-
-                    for(Item item2 : service.listItems()){
-                        System.out.println(item2);
-                    }
-
-                    System.out.println("\n=== Running out Items ===");
-
-                    for(Item item2 : service.listRunningOutItems()){
-                        System.out.println(item2);
-                    }
+                    listItemFlow(sc, service);
 
                     break;
 
@@ -120,7 +60,7 @@ public class Main {
                     System.out.println("Remove Item: ");
                     input = sc.nextLine();
                     if(service.removeByName(input.trim())) {
-                        System.out.println("Item romoved.");
+                        System.out.println("Item removed.");
                     }else {
                         System.out.println("Item not found.");
                     }
@@ -190,6 +130,78 @@ public class Main {
             }
 
 
+
+        }
+
+
+    }
+    private static void addItemFlow(Scanner sc, ItemService service){
+
+        System.out.println("Item Name: ");
+        String name = sc.nextLine();
+
+        System.out.println("Item Description: ");
+        String description = sc.nextLine();
+
+        System.out.println("""
+            Item Room:
+            YARD
+            LAUNDRY_ROOM
+            KITCHEN
+            SMALL_RESTROOM
+            LIVING_ROOM
+            STAIRS
+            BIG_BEDROOM
+            SMALL_BEDROOM
+            RESTROOM
+            BALCONY
+            NOT_ALLOCATED
+            """);
+
+        String sRoom = sc.nextLine();
+
+        System.out.println("""
+            Item Category:
+            FOOD
+            CLEANING
+            HYGIENE
+            SAFETY
+            BED_BATH
+            OTHERS
+            NOT_CATEGORIZED
+            """);
+
+        String sCategory = sc.nextLine();
+
+        System.out.println("Item Quantity: ");
+
+        int quantity = parseInt(sc.nextLine());
+
+        Item item = new ItemBuilder()
+                .name(name)
+                .description(description)
+                .room(parseRoom(sRoom))
+                .category(parseCategory(sCategory))
+                .quantity(quantity)
+                .build();
+
+        service.addItem(item);
+
+        FileManager.save(service.listItems());
+
+        System.out.println(name + " was added!");
+    }
+    private static void listItemFlow(Scanner sc, ItemService service) {
+        System.out.println("\n=== Item List         ===");
+
+        for(Item item2 : service.listItems()){
+            System.out.println(item2);
+        }
+
+        System.out.println("\n=== Running out Items ===");
+
+        for(Item item2 : service.listRunningOutItems()){
+            System.out.println(item2);
         }
     }
 
