@@ -1,5 +1,7 @@
 package ui;
 
+import model.Item;
+
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -15,14 +17,15 @@ public class ConsoleUI {
         System.out.println("=========================");
         System.out.println("   |     Inventory     | ");
         System.out.println("   |                   | ");
-        System.out.println(" 1 |add item           | ");
-        System.out.println(" 2 |list items         | ");
-        System.out.println(" 3 |search items       | ");
-        System.out.println(" 4 |remove items       | ");
-        System.out.println(" 5 |use items          | ");
-        System.out.println(" 6 |restock items      | ");
-        System.out.println(" 7 |update quantity    | ");
-        System.out.println(" 8 |exit               | ");
+        System.out.println(" 1 |Add item           | ");
+        System.out.println(" 2 |List items         | ");
+        System.out.println(" 3 |Search items       | ");
+        System.out.println(" 4 |Remove items       | ");
+        System.out.println(" 5 |Use items          | ");
+        System.out.println(" 6 |Restock items      | ");
+        System.out.println(" 7 |Update quantity    | ");
+        System.out.println(" 8 |Move Item          | ");
+        System.out.println(" 9 |Exit               | ");
         System.out.println("   |                   | ");
         System.out.println("   |                   | ");
         System.out.println("=========================");
@@ -60,6 +63,10 @@ public class ConsoleUI {
 
     }
 
+    public void showItem(Item item){
+        System.out.println(item.toString());
+    }
+
     public void showItemAdded(String name){
         System.out.println(name + " was added!");
     }
@@ -72,4 +79,7 @@ public class ConsoleUI {
         return sc.nextLine();
     }
 
+    public void showExitMessage(){
+        System.out.println("Thanks for using the app!");
+    }
 }

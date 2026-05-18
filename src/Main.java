@@ -4,8 +4,6 @@ import persistence.FileManager;
 import service.ItemService;
 import ui.ConsoleUI;
 
-import java.util.Scanner;
-
 import static util.InputParser.*;
 
 public class Main {
@@ -57,9 +55,12 @@ public class Main {
                     updateItemFlow(ui, service);
                     break;
 
-
                 case "8":
-                    exitFlow(service);
+                    moveItemFlow(ui, service);
+                    break;
+
+                case "9":
+                    exitFlow(ui, service);
                     isRunning = false;
                     break;
 
@@ -75,9 +76,9 @@ public class Main {
 
     }
 
-    private static void exitFlow(ItemService service) {
+    private static void exitFlow(ConsoleUI ui, ItemService service) {
         FileManager.save(service.listItems());
-        System.out.println("Thank you for using this app!");
+        ui.showExitMessage();
 
     }
 
@@ -86,7 +87,7 @@ public class Main {
         String name = ui.askItemName();
         Item itemUpdate = service.findByName(name.trim());
         if (itemUpdate == null) {
-            System.out.println("Item not found.");
+            ui.showItemNotFound(name);
             return;
         }
         String input = ui.askQuantity();
@@ -102,7 +103,7 @@ public class Main {
         String name = ui.askItemName();
         Item itemRestock = service.findByName(name.trim());
         if (itemRestock == null) {
-            System.out.println("Item not found.");
+            ui.showItemNotFound(name);
             return;
         }
         System.out.println("Units to restock: ");
@@ -163,7 +164,7 @@ public class Main {
         Item item = service.findByName((input.trim()));
 
         if (item == null) {
-            System.out.println("Item not found.");
+            ui.showItemNotFound(input);
             return;
         }
         System.out.println(item);
@@ -179,16 +180,17 @@ public class Main {
             FileManager.save(service.listItems());
             System.out.println("Item removed.");
         } else {
-            System.out.println("Item not found.");
+            ui.showItemNotFound(input);
         }
     }
 
     private static void useItemFlow(ConsoleUI ui, ItemService service) {
+
         System.out.println("Use item: ");
         String input = ui.askItemName();
         Item itemUses = service.findByName(input.trim());
         if (itemUses == null) {
-            System.out.println("Item not found.");
+            ui.showItemNotFound(input);
             return;
         }
         System.out.println("Units used: ");
@@ -196,8 +198,23 @@ public class Main {
         int qt = parseInt(input);
         itemUses.use(qt);
         FileManager.save(service.listItems());
-        System.out.println("Units left: " + itemUses.getQuantity());
+        ui.showUnitsLeft(itemUses.getQuantity());
 
+
+    }
+
+    private static void moveItemFlow(ConsoleUI ui, ItemService service) {
+        System.out.println("Move item: ");
+        String input = ui.askItemName();
+        Item itemMove = service.findByName(input.trim());
+        if (itemMove == null) {
+            ui.showItemNotFound(input);
+            return;
+        }
+        System.out.printf("Item Location: %s\n", itemMove.getRoom());
+        System.out.println("YARD, LAUNDRY_ROOM, KITCHEN, SMALL_RESTROOM, LIVING_ROOM, STAIRS, BIG_BEDROOM, SMALL_BEDROOM, RESTROOM, BALCONY, NOT_ALLOCATED");
+        input = ui.askItemRoom();
+        itemMove.moveToRoom(parseRoom(input));
 
     }
 }
