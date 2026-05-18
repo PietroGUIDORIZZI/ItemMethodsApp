@@ -13,9 +13,9 @@ public class Item {
         this.name = name;
 
         this.description =
-                description != null
+                description != ""
                 ? description
-                : "descrição";
+                : "Sem descrição";
 
         this.room =
                 room != null
@@ -91,11 +91,11 @@ public class Item {
 
         return """
             -------------------------
-            Name: %s
+            Name:        %s
             Description: %s
-            Room: %s
-            Category: %s
-            Quantity: %d
+            Room:        %s
+            Category:    %s
+            Quantity:    %d
             -------------------------
             """.formatted(
                 name,

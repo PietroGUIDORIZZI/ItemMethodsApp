@@ -1,8 +1,11 @@
+import model.Category;
 import model.Item;
 import model.ItemBuilder;
 import persistence.FileManager;
 import service.ItemService;
 import ui.ConsoleUI;
+
+import java.util.List;
 
 import static util.InputParser.*;
 
@@ -60,6 +63,10 @@ public class Main {
                     break;
 
                 case "9":
+                    filterByCategoryFlow(ui, service);
+                    break;
+
+                case "10":
                     exitFlow(ui, service);
                     isRunning = false;
                     break;
@@ -73,6 +80,18 @@ public class Main {
 
         }
 
+
+    }
+
+    private static void filterByCategoryFlow(ConsoleUI ui, ItemService service){
+        String input = ui.askItemCategory();
+        Category category = parseCategory(input);
+        List<Item> filteredItems = service.listByCategory(category);
+
+        for (Item item : filteredItems){
+
+            System.out.println(item);
+        }
 
     }
 

@@ -1,6 +1,8 @@
 package service;
 
+import model.Category;
 import model.Item;
+import model.Room;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +36,57 @@ public class ItemService {
 
     }
 
+    public List<Item> sortItemsAlphabetic(){
+        List<Item> sortedItems = new ArrayList<>(items);
+
+        sortedItems.sort((a,b) ->
+                a.getName().compareToIgnoreCase(b.getName()));
+
+        return sortedItems;
+
+    }
 
     public List<Item> listItems() {
 
         return new ArrayList<>(items);
 
+    }
+
+    public List<Item> listByCategory(Category category) {
+        List<Item> filteredItems = new ArrayList<>();
+
+        for (Item item : items) {
+            if (item.getCategory() == category) {
+                filteredItems.add(item);
+            }
+        }
+
+        return filteredItems;
+    }
+
+    public List<Item> listRunningOutItemsByCategory(Category category ){
+
+        List<Item> filteredItems = new ArrayList<>();
+
+        for (Item item : items){
+            if(item.isRunningOut() && item.getCategory() == category){
+                filteredItems.add(item);
+            }
+        }
+
+        return filteredItems;
+    }
+
+    public List<Item> listByRoom(Room room) {
+        List<Item> filteredItems = new ArrayList<>();
+
+        for (Item item : items) {
+            if(item.getRoom() == room){
+                filteredItems.add(item);
+            }
+        }
+
+        return filteredItems;
     }
 
     public List<Item> listRunningOutItems(){
@@ -64,6 +112,7 @@ public class ItemService {
 
         return null;
     }
+
 
     public boolean removeByName(String input) {
 
