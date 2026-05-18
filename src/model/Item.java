@@ -88,13 +88,22 @@ public class Item {
 
     @Override
     public String toString(){
-        return
-                " | Name: " + name +
-                        "\n |Description: " + description +
-                        "\n |Room: " + room +
-                        "\n |Category: " + category +
-                        "\n |Quantity: " + quantity +
-                        "\n---------------------------;";
+
+        return """
+            -------------------------
+            Name: %s
+            Description: %s
+            Room: %s
+            Category: %s
+            Quantity: %d
+            -------------------------
+            """.formatted(
+                name,
+                description,
+                room,
+                category,
+                quantity
+        );
     }
 
 }
