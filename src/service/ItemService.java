@@ -3,6 +3,7 @@ package service;
 import model.Category;
 import model.Item;
 import model.Room;
+import persistence.FileManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +126,15 @@ public class ItemService {
         items.remove(item);
         return true;
     }
+
+    public int countRunningOutItems(){
+        return listRunningOutItems().size();
+    }
+
+    public int countItems() {
+        return items.size();
+    }
+
 
 }
 

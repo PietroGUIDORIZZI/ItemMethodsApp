@@ -1,7 +1,10 @@
 package ui;
 
+import model.Category;
 import model.Item;
+import model.Room;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -26,7 +29,9 @@ public class ConsoleUI {
         System.out.println("  7 |Update quantity    | ");
         System.out.println("  8 |Move Item          | ");
         System.out.println("  9 |Show by Category   | ");
-        System.out.println(" 10 |Exit               | ");
+        System.out.println(" 10 |Show Statistics    | ");
+        System.out.println(" 11 |Change Category    | ");
+        System.out.println(" 12 |Exit               | ");
         System.out.println("    |                   | ");
         System.out.println("    |                   | ");
         System.out.println("=========================");
@@ -59,13 +64,17 @@ public class ConsoleUI {
         return  sc.nextLine();
     }
 
-    public void showUnitsLeft(int quantity){
-        System.out.println("Units left: " + quantity);
+    public void showUnitsLeft(Item item){
+        System.out.println("Units left: " + item.getQuantity());
 
     }
 
-    public void showItems(Item item){
-        System.out.println(item.toString());
+    public void showRunningOutTotal(int total){
+        System.out.println("Running out items: " + total);
+    }
+
+    public void showTotalItems(int total){
+        System.out.println("Total items: " + total);
     }
 
     public void showItemAdded(String name){
@@ -82,5 +91,33 @@ public class ConsoleUI {
 
     public void showExitMessage(){
         System.out.println("Thanks for using the app!");
+    }
+
+    public void showItems(List<Item> items){
+        for (Item item : items){
+            System.out.println(item);
+        }
+    }
+
+    public void showInvalidOption() {
+        System.out.println("Invalid Option! Try again.");
+    }
+
+    public void showRooms() {
+
+        Room[] rooms = Room.values();
+
+        for (int i = 0; i < rooms.length; i++) {
+
+            System.out.println((i + 1) + " - " + rooms[i]);
+        }
+    }
+
+    public void showCategories(){
+        Category[] categories = Category.values();
+
+        for (int i = 0; i< categories.length; i++){
+            System.out.println((i+1) + " - " + categories[i]);
+        }
     }
 }

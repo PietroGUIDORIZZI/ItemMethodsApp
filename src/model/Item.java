@@ -59,6 +59,8 @@ public class Item {
         this.room = newRoom;
     }
 
+    public void changeCategory(Category newCategory){this.category = newCategory;}
+
     public void updateQuantity(int newQuantity) {
         if(newQuantity < 0 ){
             return;
