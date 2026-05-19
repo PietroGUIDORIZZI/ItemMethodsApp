@@ -48,10 +48,6 @@ public class ItemBuilder {
 
     public Item build() {
 
-        if(name == null || name.isBlank()){
-            throw new IllegalArgumentException("Name is required");
-        }
-
         return new Item(name, description, room, category, quantity);
     }
 

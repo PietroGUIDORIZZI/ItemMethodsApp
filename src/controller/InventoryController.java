@@ -4,7 +4,7 @@ import model.Category;
 import model.Item;
 import model.ItemBuilder;
 import model.Room;
-import persistence.FileManager;
+
 import service.ItemService;
 import ui.ConsoleUI;
 
@@ -18,12 +18,14 @@ public class InventoryController {
 
 
 
+
     public InventoryController() {
         ui = new ConsoleUI();
 
         service = new ItemService();
 
-        load();
+
+        service.loadItems();
 
 
     }
@@ -67,15 +69,15 @@ public class InventoryController {
                     break;
 
                 case "8":
-                    updateItemFlow();
-                    break;
-
-                case "9":
                     moveItemFlow();
                     break;
 
-                case "10":
+                case "9":
                     changeCategoryFlow();
+                    break;
+
+                case "10":
+                    changeDescriptionFlow();
                     break;
 
                 case "11":
@@ -131,7 +133,10 @@ public class InventoryController {
         ui.searchItem();
 
         Item item = askExistingItem();
-        System.out.println(item);
+        if(item == null){
+            return;
+        }
+        ui.showItem(item);
     }
 
     private void filterByCategoryFlow() {
@@ -158,7 +163,7 @@ public class InventoryController {
 
         service.addItem(item);
 
-        FileManager.save(service.listItems());
+        service.saveItems();
 
         ui.showItemAdded(item.getName());
     }
@@ -177,7 +182,7 @@ public class InventoryController {
             return;
         }
 
-        save();
+        service.saveItems();
         ui.showUnitsLeft(item);
 
 
@@ -192,7 +197,7 @@ public class InventoryController {
         int qt = ui.askQuantity();
 
         service.restockItem(item, qt);
-        save();
+        service.saveItems();
         ui.showUnitsLeft(item);
 
     }
@@ -210,7 +215,7 @@ public class InventoryController {
             ui.failure();
             return;
         }
-        save();
+        service.saveItems();
         ui.showUnitsLeft(item);
 
 
@@ -224,7 +229,7 @@ public class InventoryController {
         }
 
         ui.showActualLocation(item);
-        ui.showRooms();
+
         Room room = ui.askRoom();
         boolean success = service.moveItem(item,room);
         if(!success){
@@ -232,7 +237,7 @@ public class InventoryController {
             return;
         }
 
-        save();
+        service.saveItems();
 
     }
 
@@ -243,10 +248,24 @@ public class InventoryController {
         }
 
         ui.showItemCategory(item);
-        ui.showCategories();
+
         model.Category newCategory = ui.askCategory();
         service.changeCategory(item,newCategory);
-        save();
+        service.saveItems();
+    }
+
+    private void changeDescriptionFlow(){
+        Item item = askExistingItem();
+        if(item == null){
+            return;
+        }
+
+        ui.showItemDescription(item);
+        String input = ui.askDescription();
+        service.changeDescription(item,input);
+        service.saveItems();
+
+
     }
 
     private void removeItemFlow() {
@@ -256,28 +275,32 @@ public class InventoryController {
 
         if (service.removeByName(input.trim())) {
 
-            save();
+            service.saveItems();
             ui.showRemovedItem();
         } else {
             ui.showItemNotFound(input);
         }
     }
 
+    private void updateDescription(){
+        Item item = askExistingItem();
+        if(item == null){
+            return;
+        }
+
+        ui.showItemDescription(item);
+        String description = ui.askDescription();
+        service.changeDescription(item,description);
+
+    }
+
     private void exitFlow() {
-        save();
+        service.saveItems();
         ui.showExitMessage();
 
     }
 
     //EXTRACTED
-
-    private void save(){
-        FileManager.save(service.listItems());
-    }
-
-    private void load() {for (Item item : FileManager.load()) {
-        service.addItem(item);
-    }}
 
     private Item findItemOrShowError(String input) {
         Item item = service.findByName(input.trim());

@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class ConsoleUI {
 
-    private Scanner sc;
+    private final Scanner sc;
 
     public ConsoleUI(){
 
@@ -18,24 +18,27 @@ public class ConsoleUI {
     }
 
     public void printMenu(){
-        System.out.println("========================|");
-        System.out.println("       Inventory        | ");
-        System.out.println("                        | ");
-        System.out.println("  1 |List items         | ");
-        System.out.println("  2 |Search items       | ");
-        System.out.println("  3 |Filter by Category | ");
-        System.out.println("  4 |Show Statistics    | ");
-        System.out.println("========================|");
-        System.out.println("  5 |Add item           | ");
-        System.out.println("  6 |Use items          | ");
-        System.out.println("  7 |Restock items      | ");
-        System.out.println("  8 |Update quantity    | ");
-        System.out.println("  9 |Move Item          | ");
-        System.out.println(" 10 |Change Category    | ");
-        System.out.println(" 11 |Remove items       | ");
-        System.out.println(" 12 |Exit               | ");
-        System.out.println("    |                   | ");
-        System.out.println("=========================");
+        System.out.println("|========================|");
+        System.out.println("|       Inventory        |");
+        System.out.println("|========================|");
+        System.out.println("|          View          |");
+        System.out.println("|========================|");
+        System.out.println("|  1 |List items         |");
+        System.out.println("|  2 |Search items       |");
+        System.out.println("|  3 |Filter by Category |");
+        System.out.println("|  4 |Show Statistics    |");
+        System.out.println("|========================|");
+        System.out.println("|         Manage         |");
+        System.out.println("|========================|");
+        System.out.println("|  5 |Add item           |");
+        System.out.println("|  6 |Use items          |");
+        System.out.println("|  7 |Restock items      |");
+        System.out.println("|  8 |Move Item          |");
+        System.out.println("|  9 |Change Category    |");
+        System.out.println("| 10 |Change Description |");
+        System.out.println("| 11 |Remove items       |");
+        System.out.println("| 12 |Exit               |");
+        System.out.println("|========================|");
         System.out.println();
 
     }
@@ -68,14 +71,30 @@ public class ConsoleUI {
     public String askMenuOption(){
         return sc.nextLine();
     }
+
     public String askItemCategory(){
         System.out.println("Item Category: ");
+        showCategories();
         return  sc.nextLine();
     }
 
     public int askQuantity(){
-        System.out.println("Quantity: ");
-        return Integer.parseInt(sc.nextLine());
+
+        while(true){
+            try{
+                System.out.println("Quantity: ");
+                String input = sc.nextLine();
+                return InputParser.parseInt(input);
+            }catch (NumberFormatException e){
+                System.out.println("Invalid number.");
+            }
+            }
+    }
+
+    public String askDescription(){
+        System.out.println("Update Description: ");
+        String input = sc.nextLine();
+        return input.trim();
     }
 
 
@@ -101,6 +120,9 @@ public class ConsoleUI {
         System.out.println(name + " not found!");
     }
 
+    public void showItemDescription(Item item) {
+        System.out.println(item.getDescription());
+    }
 
     public void showExitMessage(){
         System.out.println("Thanks for using the app!");
@@ -142,14 +164,6 @@ public class ConsoleUI {
         System.out.println("\n=== Running out Items ===");
     }
 
-    public void searchItem() {
-        System.out.println("Search Item: ");
-    }
-
-    public void removeItem() {
-        System.out.println("Remove Item: ");
-    }
-
     public void showRemovedItem() {
         System.out.println("Item removed.");
     }
@@ -166,8 +180,22 @@ public class ConsoleUI {
         System.out.println(item);
     }
 
+    public void searchItem() {
+        System.out.println("Search Item: ");
+    }
+
+    public void removeItem() {
+        System.out.println("Remove Item: ");
+    }
+
+
+
+
+
 
     public void failure() {
         System.out.println("Operation invalidated.");
     }
+
+
 }

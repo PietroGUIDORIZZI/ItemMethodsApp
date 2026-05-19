@@ -3,6 +3,7 @@ package service;
 import model.Category;
 import model.Item;
 import model.Room;
+import repository.InventoryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,28 +12,34 @@ public class ItemService {
 
     private final List<Item> items = new ArrayList<>();
 
+    private final InventoryRepository repository;
+
+    public ItemService(){
+        repository = new InventoryRepository();
+    }
+
 
     private boolean alreadyExists(String name) {
         return findByName(name) != null;
     }
 
 
-    public void addItem(Item item){
+    public boolean addItem(Item item){
 
 
 
         if (item.getName() == null || item.getName().isBlank())  {
-            return;
+            return false;
 
         }
 
         if (alreadyExists(item.getName())) {
-            return;
+            return false;
 
         }
 
         items.add(item);
-
+        return true;
 
     }
 
@@ -187,6 +194,21 @@ public class ItemService {
 
     }
 
+    public void changeDescription(Item item, String input){
+        if(item == null){
+            return;
+        }
+        item.setDescription(input);
+        saveItems();
+    }
+
+    public void saveItems(){
+        repository.save(items);
+    }
+
+    public void loadItems(){
+        items.addAll(repository.load());
+    }
 
 }
 

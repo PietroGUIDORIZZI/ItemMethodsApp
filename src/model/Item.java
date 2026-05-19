@@ -18,7 +18,7 @@ public class Item {
 
         this.description =
                 description != null && description.isBlank()
-                ? description
+                ? description.trim()
                 : "Sem descrição";
 
         this.room =
@@ -35,16 +35,16 @@ public class Item {
 
     }
 
+    public boolean isRunningOut() {
+        return quantity <= 2;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public Category getCategory() {
         return category;
-    }
-
-    public boolean isRunningOut() {
-        return quantity <= 2;
     }
 
     public String getName() {
@@ -63,6 +63,7 @@ public class Item {
         if(quantity>=0) {
             this.quantity = quantity;
         }
+        throw new IllegalArgumentException("Invalid quantity.");
 
     }
 
@@ -75,9 +76,11 @@ public class Item {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if ( description==null || description.isBlank()) {
+            return;
+        }
+        this.description = description.trim();
     }
-
 
     @Override
     public String toString(){
