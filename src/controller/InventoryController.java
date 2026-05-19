@@ -158,14 +158,22 @@ public class InventoryController {
 
     private void addItemFlow() {
 
+        try {
+            Item item = buildItemFromInput();
 
-        Item item = buildItemFromInput();
+            boolean success = service.addItem(item);
 
-        service.addItem(item);
+            if (!success) {
+                ui.failure();
+                return;
+            }
 
-        service.saveItems();
+            service.saveItems();
+            ui.showItemAdded(item.getName());
+        }catch(IllegalArgumentException e){
+            ui.showError(e.getMessage());
+        }
 
-        ui.showItemAdded(item.getName());
     }
 
     private void useItemFlow() {

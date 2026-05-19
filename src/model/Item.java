@@ -60,10 +60,17 @@ public class Item {
     }
 
     public void setQuantity(int quantity) {
-        if(quantity>=0) {
-            this.quantity = quantity;
+        try{
+            if(quantity>=0) {
+                this.quantity = quantity;
+            }
+
+
+        }catch (IllegalArgumentException e){
+            System.out.println("Invalid quantity.");
+            e.printStackTrace();
         }
-        throw new IllegalArgumentException("Invalid quantity.");
+
 
     }
 

@@ -7,16 +7,7 @@ public class InputParser {
 
 
     public static int parseInt(String input) {
-        if (input == null) {
-            return 0;
-        }
-
-        try {
-            return Integer.parseInt(input.trim());
-
-        } catch (NumberFormatException e) {
-            return 0;
-        }
+        return Integer.parseInt(input.trim());
     }
 
     public static Room parseRoom(String input) {

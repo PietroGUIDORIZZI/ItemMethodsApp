@@ -78,17 +78,27 @@ public class ConsoleUI {
         return  sc.nextLine();
     }
 
-    public int askQuantity(){
+    public int askInt(){
 
         while(true){
             try{
+
                 System.out.println("Quantity: ");
+
                 String input = sc.nextLine();
-                return InputParser.parseInt(input);
+
+                int qt = InputParser.parseInt(input);
+                if (qt < 0) {
+                    System.out.println("Quantity cannot be negative.");
+                    continue;
+                }
+
+                return qt;
+
             }catch (NumberFormatException e){
                 System.out.println("Invalid number.");
             }
-            }
+        }
     }
 
     public String askDescription(){
@@ -198,4 +208,7 @@ public class ConsoleUI {
     }
 
 
+    public void showError(String message) {
+        System.out.println("Error: " + message);
+    }
 }
