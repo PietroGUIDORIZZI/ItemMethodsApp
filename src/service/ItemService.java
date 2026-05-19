@@ -135,6 +135,12 @@ public class ItemService {
         return items.size();
     }
 
+    public void useItem(Item item, int qt){
+        item.use(qt);
+        FileManager.save(items);
+    }
+
+
 
 }
 

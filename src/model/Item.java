@@ -10,10 +10,12 @@ public class Item {
     private int quantity;
 
     public Item(String name, String description, Room room, Category category, int quantity) {
-        this.name = name;
+        this.name =
+                name != null && name.isBlank()
+                ? name : "Unnamed";
 
         this.description =
-                description != ""
+                description != null && description.isBlank()
                 ? description
                 : "Sem descrição";
 
@@ -55,37 +57,27 @@ public class Item {
         return quantity;
     }
 
-    public void moveToRoom(Room newRoom) {
-        this.room = newRoom;
+    public void setQuantity(int quantity) {
+        if(quantity>=0) {
+            this.quantity = quantity;
+        }
+
     }
 
-    public void changeCategory(Category newCategory){this.category = newCategory;}
-
-    public void updateQuantity(int newQuantity) {
-        if(newQuantity < 0 ){
-            return;
-        }
-        this.quantity = newQuantity;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public void use(int n) {
-        if (n <= 0) {
-            return;
-        }
-
-        if (n > quantity) {
-            this.quantity = 0;
-            return;
-        }
-
-        quantity -= n;
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
-    public void restock(int n) {
-        if (n <= 0) {
-            return;
-        }
-        quantity += n;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

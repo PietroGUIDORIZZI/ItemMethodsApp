@@ -3,6 +3,7 @@ package ui;
 import model.Category;
 import model.Item;
 import model.Room;
+import util.InputParser;
 
 import java.util.List;
 import java.util.Scanner;
@@ -49,20 +50,35 @@ public class ConsoleUI {
         return sc.nextLine();
     }
 
-    public String askItemRoom(){
-        System.out.println("Item Room: ");
-        return sc.nextLine();
+    public Room askRoom(){
+        showRooms();
+        String input = sc.nextLine();
+
+        return InputParser.parseRoomByNumber(input);
+
     }
 
+    public Category askCategory(){
+        showCategories();
+        String input = sc.nextLine();
+
+        return InputParser.parseCategoryByNumber(input);
+    }
+
+    public String askMenuOption(){
+        return sc.nextLine();
+    }
     public String askItemCategory(){
         System.out.println("Item Category: ");
         return  sc.nextLine();
     }
 
-    public String askQuantity(){
+    public int askQuantity(){
         System.out.println("Quantity: ");
-        return  sc.nextLine();
+        return Integer.parseInt(sc.nextLine());
     }
+
+
 
     public void showUnitsLeft(Item item){
         System.out.println("Units left: " + item.getQuantity());
@@ -85,9 +101,6 @@ public class ConsoleUI {
         System.out.println(name + " not found!");
     }
 
-    public String askMenuOption(){
-        return sc.nextLine();
-    }
 
     public void showExitMessage(){
         System.out.println("Thanks for using the app!");
@@ -120,4 +133,39 @@ public class ConsoleUI {
             System.out.println((i+1) + " - " + categories[i]);
         }
     }
+
+    public void showList() {
+        System.out.println("\n=== Item List ===");
+    }
+
+    public void showRunningOutList() {
+        System.out.println("\n=== Running out Items ===");
+    }
+
+    public void searchItem() {
+        System.out.println("Search Item: ");
+    }
+
+    public void removeItem() {
+        System.out.println("Remove Item: ");
+    }
+
+    public void showRemovedItem() {
+        System.out.println("Item removed.");
+    }
+
+    public void showActualLocation(Item item) {
+        System.out.printf("Item Location: %s\n", item.getRoom());
+    }
+
+    public void showItemCategory(Item item) {
+        System.out.printf("Item Category: %s\n", item.getCategory());
+    }
+
+    public void showItem(Item item){
+        System.out.println(item);
+    }
+
+
+
 }

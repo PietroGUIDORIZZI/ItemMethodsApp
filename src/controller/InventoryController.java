@@ -3,11 +3,11 @@ package controller;
 import model.Category;
 import model.Item;
 import model.ItemBuilder;
+import model.Room;
 import persistence.FileManager;
 import service.ItemService;
 import ui.ConsoleUI;
 
-import java.util.List;
 
 import static util.InputParser.*;
 
@@ -94,29 +94,25 @@ public class InventoryController {
     }
     private void addItemFlow() {
 
-        String name = ui.askItemName();
 
-        String description = ui.askItemDescription();
-
-        String room = ui.askItemRoom();
-
-        String category = ui.askItemCategory();
-
-        int quantity = parseInt(ui.askQuantity());
-
-        Item item = new ItemBuilder()
-                .name(name)
-                .description(description)
-                .room(parseRoom(room))
-                .category(parseCategory(category))
-                .quantity(quantity)
-                .build();
+        Item item = buildItemFromInput();
 
         service.addItem(item);
 
         FileManager.save(service.listItems());
 
-        ui.showItemAdded(name);
+        ui.showItemAdded(item.getName());
+    }
+
+    private Item buildItemFromInput() {
+
+        return new ItemBuilder()
+                .name(ui.askItemName())
+                .description(ui.askItemDescription())
+                .room(ui.askRoom())
+                .category(ui.askCategory())
+                .quantity(ui.askQuantity())
+                .build();
     }
 
     private void showStatisticsFlow(){
@@ -128,109 +124,94 @@ public class InventoryController {
     }
 
     private void useItemFlow() {
-        String input = ui.askItemName();
-        Item itemUses = service.findByName(input.trim());
-        if (itemUses == null) {
-            ui.showItemNotFound(input);
+        Item item = askExistingItem();
+
+        if(item == null){
             return;
         }
-        input = ui.askQuantity();
-        int qt = parseInt(input);
-        itemUses.use(qt);
+
+        int qt = ui.askQuantity();
+        item.use(qt);
         save();
-        ui.showUnitsLeft(itemUses);
+        ui.showUnitsLeft(item);
 
 
     }
 
     private void filterByCategoryFlow() {
-        String input = ui.askItemCategory();
-        Category category = parseCategory(input);
-        List<Item> filteredItems = service.listByCategory(category);
 
-        for (Item item : filteredItems) {
+        Category category = parseCategoryByNumber(ui.askItemCategory());
 
-            System.out.println(item);
-        }
+        ui.showItems(service.listByCategory(category));
 
     }
 
     private void exitFlow() {
-        FileManager.save(service.listItems());
+        save();
         ui.showExitMessage();
 
     }
 
     private void updateItemFlow() {
-        String name = ui.askItemName();
-        Item itemUpdate = service.findByName(name.trim());
-        if (itemUpdate == null) {
-            ui.showItemNotFound(name);
+        Item item = askExistingItem();
+        if(item == null){
             return;
         }
-        String input = ui.askQuantity();
-        int qt = parseInt(input);
-        itemUpdate.updateQuantity(qt);
+
+
+        int qt = ui.askQuantity();
+        item.updateQuantity(qt);
         save();
-        ui.showUnitsLeft(itemUpdate);
+        ui.showUnitsLeft(item);
 
 
     }
 
     private void restockItemFlow() {
-        String name = ui.askItemName();
-        Item itemRestock = service.findByName(name.trim());
-        if (itemRestock == null) {
-            ui.showItemNotFound(name);
+        Item item = askExistingItem();
+        if(item == null){
             return;
         }
-        String input = ui.askQuantity();
-        int qt = parseInt(input);
 
-        itemRestock.restock(qt);
+        int qt = ui.askQuantity();
+
+        item.restock(qt);
         save();
-        ui.showUnitsLeft(itemRestock);
+        ui.showUnitsLeft(item);
 
     }
 
 
     private void listItemFlow() {
 
-        System.out.println("\n=== Item List ===");
+        ui.showList();
 
         ui.showItems(service.listItems());
 
         if(!service.listRunningOutItems().isEmpty()){
 
-            System.out.println("\n=== Running out Items ===");
+            ui.showRunningOutList();
 
             ui.showItems(service.listRunningOutItems());
         }
     }
 
     private void searchItemFlow() {
-        System.out.println("Search Item: ");
+        ui.searchItem();
 
-        String input = ui.askItemName();
-
-        Item item = service.findByName((input.trim()));
-
-        if (item == null) {
-            ui.showItemNotFound(input);
-            return;
-        }
+        Item item = askExistingItem();
         System.out.println(item);
     }
 
     private void removeItemFlow() {
-        System.out.println("Remove Item: ");
+        ui.removeItem();
 
         String input = ui.askItemName();
 
         if (service.removeByName(input.trim())) {
 
             save();
-            System.out.println("Item removed.");
+            ui.showRemovedItem();
         } else {
             ui.showItemNotFound(input);
         }
@@ -238,36 +219,50 @@ public class InventoryController {
 
 
     private void moveItemFlow() {
-        String input = ui.askItemName();
-        Item itemMove = service.findByName(input.trim());
-        if (itemMove == null) {
-            ui.showItemNotFound(input);
+        Item item = askExistingItem();
+        if(item == null){
             return;
         }
-        System.out.printf("Item Location: %s\n", itemMove.getRoom());
+
+        ui.showActualLocation(item);
         ui.showRooms();
-        input = ui.askItemRoom();
-        itemMove.moveToRoom(parseRoomByNumber(input));
+        Room room = ui.askRoom();
+        item.moveToRoom(room);
         save();
 
     }
 
-    public void changeCategoryFlow() {
-        String input = ui.askItemName();
-        Item itemCategory = service.findByName(input.trim());
-        if(itemCategory == null){
-            ui.showInvalidOption();
+
+    private void changeCategoryFlow() {
+        Item item = askExistingItem();
+        if(item == null){
             return;
         }
-        System.out.printf("Item Category: %s\n", itemCategory.getCategory());
+
+        ui.showItemCategory(item);
         ui.showCategories();
-        input = ui.askItemCategory();
-        itemCategory.changeCategory(parseCategoryByNumber(input));
+        model.Category newCategory = ui.askCategory();
+        item.changeCategory(newCategory);
         save();
     }
 
-    public void save(){
+    private void save(){
         FileManager.save(service.listItems());
+    }
+
+    private Item findItemOrShowError(String input) {
+        Item item = service.findByName(input.trim());
+        if (item == null) {
+            ui.showItemNotFound(input);
+
+        }
+        return item;
+    }
+
+    private Item askExistingItem( ){
+        String input = ui.askItemName();
+        return findItemOrShowError(input);
+
     }
 }
 
