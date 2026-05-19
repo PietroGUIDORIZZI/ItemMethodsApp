@@ -3,14 +3,13 @@ package service;
 import model.Category;
 import model.Item;
 import model.Room;
-import persistence.FileManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemService {
 
-    private List<Item> items = new ArrayList<>();
+    private final List<Item> items = new ArrayList<>();
 
 
     private boolean alreadyExists(String name) {
@@ -135,11 +134,59 @@ public class ItemService {
         return items.size();
     }
 
-    public void useItem(Item item, int qt){
-        item.use(qt);
-        FileManager.save(items);
+    public boolean useItem(Item item, int qt){
+        if (item == null){
+            return false;
+        }
+
+        if(qt <= 0){
+            return false;
+        }
+
+        if(item.getQuantity() < qt){
+            return false;
+        }
+
+        item.setQuantity(item.getQuantity() - qt);
+
+        return true;
+
+
     }
 
+    public void restockItem(Item item, int qt){
+        if(item == null || qt <= 0){
+            return;
+        }
+        item.setQuantity(item.getQuantity()+qt);
+
+    }
+
+    public boolean moveItem(Item item, Room room){
+        if(item ==null || room == null){
+            return false;
+        }
+
+        item.setRoom(room);
+        return true;
+    }
+
+    public void changeCategory(Item item, Category category){
+        if(item == null || category == null){
+            return;
+        }
+        item.setCategory(category);
+    }
+
+    public boolean updateQuantity(Item item, int qt){
+        if(item == null || qt < 0 ){
+            return false;
+        }
+
+        item.setQuantity(qt);
+        return true;
+
+    }
 
 
 }

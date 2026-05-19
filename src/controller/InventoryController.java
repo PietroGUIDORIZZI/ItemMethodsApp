@@ -131,7 +131,12 @@ public class InventoryController {
         }
 
         int qt = ui.askQuantity();
-        item.use(qt);
+        boolean success = service.useItem(item,qt);
+        if(!success){
+            ui.failure();
+            return;
+        }
+
         save();
         ui.showUnitsLeft(item);
 
@@ -160,7 +165,11 @@ public class InventoryController {
 
 
         int qt = ui.askQuantity();
-        item.updateQuantity(qt);
+        boolean success = service.updateQuantity(item,qt);
+        if(!success){
+            ui.failure();
+            return;
+        }
         save();
         ui.showUnitsLeft(item);
 
@@ -175,7 +184,7 @@ public class InventoryController {
 
         int qt = ui.askQuantity();
 
-        item.restock(qt);
+        service.restockItem(item, qt);
         save();
         ui.showUnitsLeft(item);
 
@@ -221,13 +230,19 @@ public class InventoryController {
     private void moveItemFlow() {
         Item item = askExistingItem();
         if(item == null){
+            ui.failure();
             return;
         }
 
         ui.showActualLocation(item);
         ui.showRooms();
         Room room = ui.askRoom();
-        item.moveToRoom(room);
+        boolean success = service.moveItem(item,room);
+        if(!success){
+            ui.failure();
+            return;
+        }
+
         save();
 
     }
@@ -242,7 +257,7 @@ public class InventoryController {
         ui.showItemCategory(item);
         ui.showCategories();
         model.Category newCategory = ui.askCategory();
-        item.changeCategory(newCategory);
+        service.changeCategory(item,newCategory);
         save();
     }
 

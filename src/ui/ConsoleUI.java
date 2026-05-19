@@ -167,5 +167,7 @@ public class ConsoleUI {
     }
 
 
-
+    public void failure() {
+        System.out.println("Operation invalidated.");
+    }
 }

@@ -3,16 +3,18 @@ package model;
 
 public class Item {
 
-    private String name;
+    private final String name;
     private String description;
     private Room room;
     private Category category;
     private int quantity;
 
     public Item(String name, String description, Room room, Category category, int quantity) {
-        this.name =
-                name != null && name.isBlank()
-                ? name : "Unnamed";
+
+        if(name == null || name.isBlank()){
+            throw new IllegalArgumentException("Invalid item name");
+        }
+        this.name = name.trim();
 
         this.description =
                 description != null && description.isBlank()
@@ -29,7 +31,7 @@ public class Item {
                 ? category
                 : Category.NOT_CATEGORIZED;
 
-        this.quantity = quantity;
+        this.quantity = Math.max(quantity, 0);
 
     }
 
@@ -76,9 +78,6 @@ public class Item {
         this.description = description;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public String toString(){
