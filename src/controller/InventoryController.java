@@ -12,18 +12,23 @@ import ui.ConsoleUI;
 import static util.InputParser.*;
 
 public class InventoryController {
+
     private final ConsoleUI ui;
     private final ItemService service;
+
+
 
     public InventoryController() {
         ui = new ConsoleUI();
 
         service = new ItemService();
 
-        for (Item item : FileManager.load()) {
-            service.addItem(item);
-        }
+        load();
+
+
     }
+
+    //APP
 
     public void start() {
         boolean isRunning = true;
@@ -34,47 +39,47 @@ public class InventoryController {
 
             switch (op) {
                 case "1":
-                    addItemFlow();
-                    break;
-
-                case "2":
                     listItemFlow();
                     break;
 
-                case "3":
+                case "2":
                     searchItemFlow();
                     break;
 
-                case "4":
-                    removeItemFlow();
-                    break;
-
-                case "5":
-                    useItemFlow();
-                    break;
-
-                case "6":
-                    restockItemFlow();
-                    break;
-
-                case "7":
-                    updateItemFlow();
-                    break;
-
-                case "8":
-                    moveItemFlow();
-                    break;
-
-                case "9":
+                case "3":
                     filterByCategoryFlow();
                     break;
 
-                case "10":
+                case "4":
                     showStatisticsFlow();
                     break;
 
-                case "11":
+                case "5":
+                    addItemFlow();
+                    break;
+
+                case "6":
+                    useItemFlow();
+                    break;
+
+                case "7":
+                    restockItemFlow();
+                    break;
+
+                case "8":
+                    updateItemFlow();
+                    break;
+
+                case "9":
+                    moveItemFlow();
+                    break;
+
+                case "10":
                     changeCategoryFlow();
+                    break;
+
+                case "11":
+                    removeItemFlow();
                     break;
 
                 case "12":
@@ -92,17 +97,8 @@ public class InventoryController {
         }
 
     }
-    private void addItemFlow() {
 
-
-        Item item = buildItemFromInput();
-
-        service.addItem(item);
-
-        FileManager.save(service.listItems());
-
-        ui.showItemAdded(item.getName());
-    }
+    //BUILDER
 
     private Item buildItemFromInput() {
 
@@ -115,81 +111,7 @@ public class InventoryController {
                 .build();
     }
 
-    private void showStatisticsFlow(){
-        int totalItems = service.countItems();
-        int runningOut = service.countRunningOutItems();
-
-        ui.showTotalItems(totalItems);
-        ui.showRunningOutTotal(runningOut);
-    }
-
-    private void useItemFlow() {
-        Item item = askExistingItem();
-
-        if(item == null){
-            return;
-        }
-
-        int qt = ui.askQuantity();
-        boolean success = service.useItem(item,qt);
-        if(!success){
-            ui.failure();
-            return;
-        }
-
-        save();
-        ui.showUnitsLeft(item);
-
-
-    }
-
-    private void filterByCategoryFlow() {
-
-        Category category = parseCategoryByNumber(ui.askItemCategory());
-
-        ui.showItems(service.listByCategory(category));
-
-    }
-
-    private void exitFlow() {
-        save();
-        ui.showExitMessage();
-
-    }
-
-    private void updateItemFlow() {
-        Item item = askExistingItem();
-        if(item == null){
-            return;
-        }
-
-
-        int qt = ui.askQuantity();
-        boolean success = service.updateQuantity(item,qt);
-        if(!success){
-            ui.failure();
-            return;
-        }
-        save();
-        ui.showUnitsLeft(item);
-
-
-    }
-
-    private void restockItemFlow() {
-        Item item = askExistingItem();
-        if(item == null){
-            return;
-        }
-
-        int qt = ui.askQuantity();
-
-        service.restockItem(item, qt);
-        save();
-        ui.showUnitsLeft(item);
-
-    }
-
+    //FLOWS
 
     private void listItemFlow() {
 
@@ -212,20 +134,87 @@ public class InventoryController {
         System.out.println(item);
     }
 
-    private void removeItemFlow() {
-        ui.removeItem();
+    private void filterByCategoryFlow() {
 
-        String input = ui.askItemName();
+        Category category = parseCategoryByNumber(ui.askItemCategory());
 
-        if (service.removeByName(input.trim())) {
+        ui.showItems(service.listByCategory(category));
 
-            save();
-            ui.showRemovedItem();
-        } else {
-            ui.showItemNotFound(input);
-        }
     }
 
+    private void showStatisticsFlow(){
+        int totalItems = service.countItems();
+        int runningOut = service.countRunningOutItems();
+
+        ui.showTotalItems(totalItems);
+        ui.showRunningOutTotal(runningOut);
+    }
+
+
+    private void addItemFlow() {
+
+
+        Item item = buildItemFromInput();
+
+        service.addItem(item);
+
+        FileManager.save(service.listItems());
+
+        ui.showItemAdded(item.getName());
+    }
+
+    private void useItemFlow() {
+        Item item = askExistingItem();
+
+        if(item == null){
+            return;
+        }
+
+        int qt = ui.askQuantity();
+        boolean success = service.useItem(item,qt);
+        if(!success){
+            ui.failure();
+            return;
+        }
+
+        save();
+        ui.showUnitsLeft(item);
+
+
+    }
+
+    private void restockItemFlow() {
+        Item item = askExistingItem();
+        if(item == null){
+            return;
+        }
+
+        int qt = ui.askQuantity();
+
+        service.restockItem(item, qt);
+        save();
+        ui.showUnitsLeft(item);
+
+    }
+
+    private void updateItemFlow() {
+        Item item = askExistingItem();
+        if(item == null){
+            return;
+        }
+
+
+        int qt = ui.askQuantity();
+        boolean success = service.updateQuantity(item,qt);
+        if(!success){
+            ui.failure();
+            return;
+        }
+        save();
+        ui.showUnitsLeft(item);
+
+
+    }
 
     private void moveItemFlow() {
         Item item = askExistingItem();
@@ -247,7 +236,6 @@ public class InventoryController {
 
     }
 
-
     private void changeCategoryFlow() {
         Item item = askExistingItem();
         if(item == null){
@@ -261,9 +249,35 @@ public class InventoryController {
         save();
     }
 
+    private void removeItemFlow() {
+        ui.removeItem();
+
+        String input = ui.askItemName();
+
+        if (service.removeByName(input.trim())) {
+
+            save();
+            ui.showRemovedItem();
+        } else {
+            ui.showItemNotFound(input);
+        }
+    }
+
+    private void exitFlow() {
+        save();
+        ui.showExitMessage();
+
+    }
+
+    //EXTRACTED
+
     private void save(){
         FileManager.save(service.listItems());
     }
+
+    private void load() {for (Item item : FileManager.load()) {
+        service.addItem(item);
+    }}
 
     private Item findItemOrShowError(String input) {
         Item item = service.findByName(input.trim());

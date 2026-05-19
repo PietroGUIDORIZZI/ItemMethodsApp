@@ -18,22 +18,22 @@ public class ConsoleUI {
     }
 
     public void printMenu(){
-        System.out.println("=========================");
-        System.out.println("    |     Inventory     | ");
-        System.out.println("    |                   | ");
-        System.out.println("  1 |Add item           | ");
-        System.out.println("  2 |List items         | ");
-        System.out.println("  3 |Search items       | ");
-        System.out.println("  4 |Remove items       | ");
-        System.out.println("  5 |Use items          | ");
-        System.out.println("  6 |Restock items      | ");
-        System.out.println("  7 |Update quantity    | ");
-        System.out.println("  8 |Move Item          | ");
-        System.out.println("  9 |Show by Category   | ");
-        System.out.println(" 10 |Show Statistics    | ");
-        System.out.println(" 11 |Change Category    | ");
+        System.out.println("========================|");
+        System.out.println("       Inventory        | ");
+        System.out.println("                        | ");
+        System.out.println("  1 |List items         | ");
+        System.out.println("  2 |Search items       | ");
+        System.out.println("  3 |Filter by Category | ");
+        System.out.println("  4 |Show Statistics    | ");
+        System.out.println("========================|");
+        System.out.println("  5 |Add item           | ");
+        System.out.println("  6 |Use items          | ");
+        System.out.println("  7 |Restock items      | ");
+        System.out.println("  8 |Update quantity    | ");
+        System.out.println("  9 |Move Item          | ");
+        System.out.println(" 10 |Change Category    | ");
+        System.out.println(" 11 |Remove items       | ");
         System.out.println(" 12 |Exit               | ");
-        System.out.println("    |                   | ");
         System.out.println("    |                   | ");
         System.out.println("=========================");
         System.out.println();
